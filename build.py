@@ -43,6 +43,8 @@ pyinstaller_command.extend([
 ])
 
 # Add data files (assets)
+
+# 1. Add the ASSETS_DIR (e.g., 'assets/' -> 'assets/')
 # This option tells PyInstaller to include the entire ASSETS_DIR.
 # The content of ASSETS_DIR will be available in a directory named 'assets'
 # relative to the executable at runtime.
@@ -50,8 +52,22 @@ pyinstaller_command.extend([
 if os.path.exists(ASSETS_DIR):
     pyinstaller_command.append(f"--add-data={ASSETS_DIR}{os.pathsep}{ASSETS_DIR}")
 else:
-    print(f"Warning: Assets directory '{ASSETS_DIR}' not found. Skipping --add-data for it.")
-    print("If you have assets, create an 'assets' folder and place them there, or update ASSETS_DIR.")
+    # This warning is fine, but ICON_PATH also depends on ASSETS_DIR, so an icon might fail to load.
+    print(f"Warning: Main assets directory '{ASSETS_DIR}' (for icon, etc.) not found. Skipping --add-data for it.")
+
+# 2. Add the 'config' directory (e.g., 'config/' -> 'config/')
+CONFIG_DIR = "config"
+if os.path.exists(CONFIG_DIR):
+    pyinstaller_command.append(f"--add-data={CONFIG_DIR}{os.pathsep}{CONFIG_DIR}")
+else:
+    print(f"Warning: Configuration directory '{CONFIG_DIR}' not found. theme.json might be missing.")
+
+# 3. Add 'styling.qss' from the root (e.g., 'styling.qss' -> 'styling.qss')
+STYLESHEET_FILE = "styling.qss"
+if os.path.exists(STYLESHEET_FILE):
+    pyinstaller_command.append(f"--add-data={STYLESHEET_FILE}{os.pathsep}.") # '.' means place in root of bundle
+else:
+    print(f"Warning: Stylesheet '{STYLESHEET_FILE}' not found. Global styles might be missing.")
 
 # Specify the main Python script (entry point) for the application
 pyinstaller_command.append(ENTRY_POINT)

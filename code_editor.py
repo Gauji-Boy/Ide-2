@@ -4,6 +4,7 @@ from PySide6.QtCore import Qt, QTimer, QStringListModel, QRect, QRegularExpressi
 import json
 import os
 import sys
+from utils import resource_path
 from PySide6.QtCore import QThreadPool # Import QThreadPool
 
 # Import worker threads
@@ -124,7 +125,7 @@ class _InternalCodeEditor(QPlainTextEdit): # Renamed and inherits QPlainTextEdit
     # All original CodeEditor methods that were QPlainTextEdit specific are moved here
     def _load_theme_config(self):
         print("LOG: CodeEditor._load_theme_config - Entry")
-        config_path = os.path.join(os.path.dirname(__file__), 'config', 'theme.json')
+        config_path = resource_path(os.path.join('config', 'theme.json'))
         try:
             with open(config_path, 'r') as f:
                 return json.load(f)

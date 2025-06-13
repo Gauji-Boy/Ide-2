@@ -1,12 +1,25 @@
 import sys
 import os
 from PySide6.QtWidgets import QApplication
+from utils import resource_path
 from main_window import MainWindow
 from welcome_screen import WelcomeScreen
 
 class AppController:
     def __init__(self):
         self.app = QApplication(sys.argv)
+
+        # Apply global stylesheet
+        try:
+            stylesheet_path = resource_path("styling.qss")
+            if os.path.exists(stylesheet_path):
+                with open(stylesheet_path, "r") as f:
+                    self.app.setStyleSheet(f.read())
+            else:
+                print(f"Warning: Stylesheet 'styling.qss' not found at {stylesheet_path}")
+        except Exception as e:
+            print(f"Error loading stylesheet 'styling.qss': {e}")
+
         self.main_window = MainWindow() # Do not show yet
         self.welcome_screen = WelcomeScreen(recent_projects=self.main_window.recent_projects)
         self.main_window.welcome_page = self.welcome_screen # Pass the welcome_screen instance to main_window
